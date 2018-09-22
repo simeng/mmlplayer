@@ -1,0 +1,34 @@
+{
+  "name": "mmlplayer",
+  "version": "1.0.0",
+  "description": "Plays a preview of MML data used in various games to make ingame music",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simeng/mmlplayer.git"
+  },
+  "keywords": [
+    "mml",
+    "player",
+    "music",
+    "format"
+  ],
+  "author": "Simen Graaten <simeng@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/simeng/mmlplayer/issues"
+  },
+  "homepage": "https://github.com/simeng/mmlplayer#readme",
+  "devDependencies": {
+    "@babel/core": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "babel-loader": "^8.0.2",
+    "webpack": "^4.19.1",
+    "webpack-cli": "^3.1.0"
+  }
+}

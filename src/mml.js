@@ -58,16 +58,6 @@ class MML {
             '9': 'val',
             '0': 'val'
         };
-        console.log("Loading");
-        MIDI.loadPlugin({
-            instrument: "acoustic_grand_piano",
-            onprogress: (state, progress) => {
-                console.log(state, progress);
-            },
-            onsuccess: () => {
-                console.log("Loaded");
-            }
-        });
     }
 
     playNote(note, speed, mod) {
@@ -122,9 +112,9 @@ class MML {
         return modifiers;
     };
 
-    loadInstrument(name, callback) {
+    loadInstrument(name, url, callback) {
         MIDI.loadPlugin({
-            soundfontUrl: "midi-js-soundfonts/FluidR3_GM/",
+            soundfontUrl: url,
             instrument: name,
             onsuccess: function() {
                 MIDI.programChange(0, MIDI.GM.byName[name].number);

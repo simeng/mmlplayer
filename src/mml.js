@@ -61,10 +61,12 @@ class MML {
     }
 
     playNote(note, speed, mod) {
-        MIDI.noteOn(this.track, note, this.volume, this.curPos);
+        var context = MIDI.getContext();
+        
+        MIDI.noteOn(this.track, note, this.volume, context.currentTime + this.curPos);
 
         if (!mod.and)
-            MIDI.noteOff(this.track, note, this.curPos + speed);
+            MIDI.noteOff(this.track, note, context.currentTime + this.curPos + speed);
     };
 
     moveTime(speed) {

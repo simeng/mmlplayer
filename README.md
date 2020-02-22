@@ -9,5 +9,4 @@ http://dirty.h4x.no/mml/mml.html
 Requirements
 ============
 * https://github.com/mudcube/MIDI.js/
-* https://github.com/gleitz/midi-js-soundfonts
-
+* https://github.com/gleitz/midi-js-soundfonts (npm run fetch-soundfont)

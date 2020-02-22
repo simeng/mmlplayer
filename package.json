@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack --watch",
+    "fetch-soundfont": "wget -O public/soundfont/acoustic_grand_piano-ogg.js https://github.com/mudcube/MIDI.js/blob/master/examples/soundfont/acoustic_grand_piano-ogg.js?raw=true",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

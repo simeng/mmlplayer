@@ -1,8 +1,9 @@
 {
   "name": "@simeng/mmlplayer",
-  "version": "1.0.2",
+  "version": "2.0.1",
   "description": "Plays a preview of MML data used in various games to make ingame music",
   "main": "dist/mml.js",
+  "module": "dist/mml.js",
   "scripts": {
     "build-dist": "babel src/mml.js -o dist/mml.js",
     "build-example": "npm run fetch-soundfont && webpack-cli",

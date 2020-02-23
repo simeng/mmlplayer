@@ -3,8 +3,7 @@ const path = require('path');
 module.exports = {
     mode: 'production',
     entry: {
-        mml: './src/mml.js',
-        index: './src/index.js'
+        index: './example/assets/index.js'
     },
     devtool: 'source-map',
     resolve: {
@@ -28,8 +27,7 @@ module.exports = {
         ]
     },
     output: {
-        path: path.resolve(__dirname, "dist"),
+        path: path.resolve(__dirname, "example"),
         filename: "[name].js",
-        publicPath: "/assets/"
     }
 };

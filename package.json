@@ -1,6 +1,6 @@
 {
   "name": "@simeng/mmlplayer",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Plays a preview of MML data used in various games to make ingame music",
   "main": "dist/mml.js",
   "module": "dist/mml.js",

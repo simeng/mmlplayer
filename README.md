@@ -4,7 +4,7 @@ MIDI.js
 
 Demopage
 ========
-http://dirty.h4x.no/mml/mml.html
+http://dirty.h4x.no/mml/
 
 Requirements
 ============

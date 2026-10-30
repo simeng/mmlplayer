@@ -1,15 +1,15 @@
-import MIDI from "midi.js";
-
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const midi_js_1 = __importDefault(require("midi.js"));
 class MML {
     constructor() {
-        this.onPlayNoteCb = null;
-        this.onMoveTimeCb = null;
-        this.delay = 0; // play one note every quarter second
-        this.note = 0; // the MIDI note
+        this.note = 0;
         this.numNotes = 12;
         this.defaultLength = 4;
         this.index = 0;
-        this.value = "";
         this.track = 0;
         this.startPos = 1;
         this.curPos = this.startPos;
@@ -17,7 +17,7 @@ class MML {
         this.octave = 5;
         this.tempo = 100;
         this.volume = 127;
-        this.source = null;
+        this.source = [];
         this.skipNext = false;
         this.notes = {
             c: 0,
@@ -26,7 +26,7 @@ class MML {
             f: 5,
             g: 7,
             a: 9,
-            b: 11
+            b: 11,
         };
         this.charTypes = {
             c: "n",
@@ -58,60 +58,38 @@ class MML {
             "7": "val",
             "8": "val",
             "9": "val",
-            "0": "val"
+            "0": "val",
         };
     }
-
     playNote(note, speed, mod) {
-        var context = MIDI.getContext();
-
-        MIDI.noteOn(
-            this.track,
-            note,
-            this.volume,
-            context.currentTime + this.curPos
-        );
-
+        const context = midi_js_1.default.getContext();
+        midi_js_1.default.noteOn(this.track, note, this.volume, context.currentTime + this.curPos);
         if (!mod.and)
-            MIDI.noteOff(
-                this.track,
-                note,
-                context.currentTime + this.curPos + speed
-            );
+            midi_js_1.default.noteOff(this.track, note, context.currentTime + this.curPos + speed);
         this.onPlayNoteCb && this.onPlayNoteCb(note, speed, mod);
     }
-
     moveTime(speed) {
         var timeIndex = speed * (240 / this.tempo);
         this.curPos += timeIndex;
-
         this.onMoveTimeCb && this.onMoveTimeCb(this.curPos);
     }
-
     onMoveTime(cb) {
         this.onMoveTimeCb = cb;
     }
-
     onPlayNote(cb) {
         this.onPlayNoteCb = cb;
     }
-
     parseModifiers() {
-        var value = "";
-        var modifiers = { value: 0, halfStep: 0, stop: 0 };
+        const modifiers = { value: 0, halfStep: 0, stop: 0 };
         for (var i = this.index; i < this.source.length; i++) {
-            var cur = this.source[i];
-
-            if (
-                cur in this.charTypes &&
+            let cur = this.source[i];
+            if (cur in this.charTypes &&
                 this.charTypes[cur] !== "stop" &&
                 this.charTypes[cur] !== "mod" &&
-                this.charTypes[cur] !== "val"
-            ) {
+                this.charTypes[cur] !== "val") {
                 this.index = i;
                 return modifiers;
             }
-
             // Read in complete values if current is the start of one
             if (this.charTypes[cur] === "val") {
                 var v = "";
@@ -120,83 +98,90 @@ class MML {
                 }
                 i--;
                 modifiers.value = parseInt(v, 10);
-            } else if (this.charTypes[cur] === "mod") {
+            }
+            else if (this.charTypes[cur] === "mod") {
                 // ß, #
-                if (cur === "+" || cur === "#") modifiers.halfStep = 1;
-                else if (cur === "&") modifiers.and = true;
-                else modifiers.halfStep = -1;
-            } else if (this.charTypes[cur] === "stop") {
+                if (cur === "+" || cur === "#")
+                    modifiers.halfStep = 1;
+                else if (cur === "&")
+                    modifiers.and = true;
+                else
+                    modifiers.halfStep = -1;
+            }
+            else if (this.charTypes[cur] === "stop") {
                 modifiers.stop = 1;
             }
         }
         this.index = i;
         return modifiers;
     }
-
     loadInstrument(name, url, callback) {
-        MIDI.loadPlugin({
+        midi_js_1.default.loadPlugin({
             soundfontUrl: url,
             instrument: name,
-            onsuccess: function() {
-                MIDI.programChange(0, MIDI.GM.byName[name].number);
-                MIDI.programChange(1, MIDI.GM.byName[name].number);
-                MIDI.programChange(2, MIDI.GM.byName[name].number);
-                MIDI.programChange(3, MIDI.GM.byName[name].number);
-
+            onsuccess: function () {
+                midi_js_1.default.programChange(0, midi_js_1.default.GM.byName[name].number);
+                midi_js_1.default.programChange(1, midi_js_1.default.GM.byName[name].number);
+                midi_js_1.default.programChange(2, midi_js_1.default.GM.byName[name].number);
+                midi_js_1.default.programChange(3, midi_js_1.default.GM.byName[name].number);
                 callback();
-            }
+            },
         });
     }
-
     parseNote() {
         while (this.index < this.source.length) {
             var i = this.index;
             var cur = this.source[i];
-
             if (this.charTypes[cur] === "n") {
                 // note
                 this.index++;
                 var mod = this.parseModifiers();
                 var speed = 1 / this.defaultLength;
-                if (mod.value) speed = 1 / mod.value;
-                if (mod.stop) speed *= 1.5;
-
+                if (mod.value)
+                    speed = 1 / mod.value;
+                if (mod.stop)
+                    speed *= 1.5;
                 this.speed = speed;
-                this.note =
-                    this.octave * this.numNotes +
-                    this.notes[cur] +
-                    mod.halfStep;
-                if (this.skipNext) this.skipNext = false;
-                else this.playNote(this.note, this.speed, mod);
-
+                this.note = this.octave * this.numNotes + this.notes[cur] + mod.halfStep;
+                if (this.skipNext)
+                    this.skipNext = false;
+                else
+                    this.playNote(this.note, this.speed, mod);
                 this.moveTime(this.speed);
-
-                if (mod.and) this.skipNext = true;
-            } else if (this.charTypes[cur] === "trk") {
+                if (mod.and)
+                    this.skipNext = true;
+            }
+            else if (this.charTypes[cur] === "trk") {
                 this.index++;
                 this.track++;
                 this.curPos = this.startPos;
-            } else if (this.charTypes[cur] === "oct") {
+            }
+            else if (this.charTypes[cur] === "oct") {
                 this.index++;
                 // octave change command
                 if (cur == ">") {
                     this.octave++;
-                } else if (cur == "<") {
+                }
+                else if (cur == "<") {
                     this.octave--;
-                } else if (cur == "o") {
+                }
+                else if (cur == "o") {
                     var mod = this.parseModifiers();
                     this.octave = mod.value;
                 }
-            } else if (this.charTypes[cur] === "len") {
+            }
+            else if (this.charTypes[cur] === "len") {
                 // length
                 this.index++;
                 var mod = this.parseModifiers();
                 this.defaultLength = mod.value;
-            } else if (this.charTypes[cur] === "vol") {
+            }
+            else if (this.charTypes[cur] === "vol") {
                 this.index++;
                 var mod = this.parseModifiers();
-                MIDI.setVolume(this.track, this.volume);
-            } else if (this.charTypes[cur] === "rest") {
+                midi_js_1.default.setVolume(this.track, this.volume);
+            }
+            else if (this.charTypes[cur] === "rest") {
                 // rest
                 this.index++;
                 var mod = this.parseModifiers();
@@ -205,29 +190,27 @@ class MML {
                     speed = 1 / mod.value;
                 }
                 this.moveTime(speed);
-            } else if (this.charTypes[cur] === "tempo") {
+            }
+            else if (this.charTypes[cur] === "tempo") {
                 // tempo
                 this.index++;
                 var mod = this.parseModifiers();
                 this.tempo = mod.value;
-            } else {
+            }
+            else {
                 console.log("Unhandled command: " + cur);
                 this.index++;
             }
         }
     }
-
     parse(data) {
         this.source = data;
         this.curPos = this.startPos;
         this.index = 0;
         this.track = 0;
-
         this.reset();
-
         this.parseNote();
     }
-
     reset() {
         this.speed = 1 / 4;
         this.octave = 5;
@@ -235,5 +218,4 @@ class MML {
         this.defaultLength = 4;
     }
 }
-
-export default MML;
+exports.default = MML;

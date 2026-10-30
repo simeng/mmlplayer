@@ -4,6 +4,9 @@
   "description": "Plays a preview of MML data used in various games to make ingame music",
   "main": "dist/mml.js",
   "module": "dist/mml.js",
+  "prettier": {
+    "semi": false
+  },
   "scripts": {
     "build-dist": "babel src/mml.js -o dist/mml.js",
     "build-example": "npm run fetch-soundfont && webpack-cli",
@@ -32,6 +35,7 @@
     "@babel/core": "^7.8.4",
     "@babel/preset-env": "^7.8.4",
     "babel-loader": "^8.0.6",
+    "typescript": "^4.9.4",
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11"
   },
